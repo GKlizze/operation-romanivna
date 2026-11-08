@@ -25,7 +25,10 @@ export interface GameState {
   completedAt?: string
   vibe?: VibeId
   menu: MenuSelection
+  /** звільнені з криги сердечка */
   kisses?: number
+  /** сердечка, які встигли з’їсти зубки */
+  bites?: number
   /** індекс раунду -> вибір */
   eitherOr: Record<number, EitherOrChoice>
   coupon?: CouponId

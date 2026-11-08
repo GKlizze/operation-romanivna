@@ -13,7 +13,7 @@ interface GameContextValue {
   reset: () => void
   setVibe: (vibe: VibeId) => void
   setMenu: (patch: Partial<MenuSelection>) => void
-  setKisses: (kisses: number) => void
+  setKissResult: (kisses: number, bites: number) => void
   setEitherOr: (round: number, choice: EitherOrChoice) => void
   setCoupon: (coupon: CouponId) => void
   setHours: (hours: HoursMap) => void
@@ -64,7 +64,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       },
       setVibe: (vibe) => patch({ vibe }),
       setMenu: (p) => setState((s) => ({ ...s, menu: { ...s.menu, ...p } })),
-      setKisses: (kisses) => patch({ kisses }),
+      setKissResult: (kisses, bites) => patch({ kisses, bites }),
       setEitherOr: (round, choice) =>
         setState((s) => ({ ...s, eitherOr: { ...s.eitherOr, [round]: choice } })),
       setCoupon: (coupon) => patch({ coupon }),

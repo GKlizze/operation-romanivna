@@ -44,6 +44,14 @@ describe('generatePlan', () => {
     expect(text).toContain('Просто бути поруч і нікуди не поспішати.')
   })
 
+  it('mentions bites next to kisses when the ice game recorded them', () => {
+    const withBites = generatePlan(state({ kisses: 7, bites: 3 })).find((s) => s.id === 'kisses')!
+    expect(withBites.text).toContain('7')
+    expect(withBites.text).toMatch(/3 кусі/)
+    const noBites = generatePlan(state({ kisses: 7, bites: 0 })).find((s) => s.id === 'kisses')!
+    expect(noBites.text).toMatch(/жодного кусю/i)
+  })
+
   it('changes the opening with the vibe', () => {
     const cozy = generatePlan(state({ vibe: 'cozy' })).find((s) => s.id === 'start')!
     const walk = generatePlan(state({ vibe: 'walk' })).find((s) => s.id === 'start')!

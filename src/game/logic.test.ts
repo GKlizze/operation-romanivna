@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { kissesMessage } from './content'
+import { bitesMessage, kissesMessage } from './content'
 import { canAddHour, hoursTotal, isHoursComplete, shuffle } from './logic'
 import type { HoursMap } from './types'
 
@@ -48,5 +48,14 @@ describe('shuffle', () => {
     expect(input).toEqual([1, 2, 3, 4])
     i = 0
     expect(shuffle(input, rng)).toEqual(out)
+  })
+})
+
+describe('bitesMessage', () => {
+  it('has a line for zero, a few and many bites', () => {
+    expect(bitesMessage(0)).toMatch(/жодного/i)
+    expect(bitesMessage(2)).toMatch(/зубки/i)
+    expect(bitesMessage(4)).not.toEqual(bitesMessage(2))
+    expect(bitesMessage(9)).toMatch(/зубки/i)
   })
 })

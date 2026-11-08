@@ -42,6 +42,7 @@ function filledState(): GameState {
     vibe: 'secret',
     menu: { main: 'steak', dessert: 'pryanyky', drink: 'cocoa' },
     kisses: 14,
+    bites: 2,
     eitherOr: { 0: 'a', 1: 'b', 2: 'b', 3: 'a', 4: 'b' },
     coupon: 'wish',
     hours: { hugs: 4, walks: 2, food: 2, movies: 1, adventures: 1 },

@@ -137,7 +137,11 @@ function scheduleSection(state: GameState): string {
 
 function kissesSection(state: GameState): string {
   const n = state.kisses ?? 0
-  return `Запас: ${n} ${pluralize(n, ['поцілунок', 'поцілунки', 'поцілунків'])}. ${kissesMessage(n)}`
+  const base = `Запас: ${n} ${pluralize(n, ['поцілунок', 'поцілунки', 'поцілунків'])}. ${kissesMessage(n)}`
+  const b = state.bites
+  if (b === undefined) return base
+  if (b === 0) return `${base} Зубки лишилися голодними: жодного кусю.`
+  return `${base} І ще ${b} ${pluralize(b, ['кусь', 'кусі', 'кусів'])} від зубків — це теж форма уваги.`
 }
 
 function couponSection(state: GameState): string {

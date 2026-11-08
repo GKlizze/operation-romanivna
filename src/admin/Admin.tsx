@@ -13,6 +13,7 @@ import {
   HOURS_CATEGORIES,
   MAINS,
   VIBES,
+  bitesMessage,
   kissesMessage,
 } from '../game/content'
 import { hoursTotal } from '../game/logic'
@@ -79,6 +80,7 @@ function Results({ loaded }: { loaded: Loaded }) {
         vibe: vibe ? { id: vibe.id, label: vibe.label } : null,
         menu: { main: main?.label ?? null, dessert: dessert?.label ?? null, drink: drink?.label ?? null },
         kisses: s.kisses ?? null,
+        bites: s.bites ?? null,
         eitherOr: EITHER_OR_ROUNDS.map((r, i) => ({
           question: `${r.a} / ${r.b}`,
           answer: s.eitherOr[i] === 'a' ? r.a : s.eitherOr[i] === 'b' ? r.b : null,
@@ -127,10 +129,19 @@ function Results({ loaded }: { loaded: Loaded }) {
         <Row label="Напій" value={drink ? `${drink.emoji} ${drink.label}` : '—'} />
       </Section>
 
-      <Section title="Рівень 3 · Поцілунки">
-        <div className="flex items-center gap-3">
-          <span className="font-display text-4xl font-bold">{s.kisses ?? '—'}</span>
-          <p className="text-[14px] text-bordeaux/75">{s.kisses !== undefined ? kissesMessage(s.kisses) : 'Мінігру ще не пройдено'}</p>
+      <Section title="Рівень 3 · Цьом чи кусь">
+        <div className="flex items-center gap-4">
+          <div className="text-center">
+            <span className="font-display text-4xl font-bold">{s.kisses ?? '—'}</span>
+            <p className="text-[11px] uppercase tracking-wider text-bordeaux/55">💋 цьомів</p>
+          </div>
+          <div className="text-center">
+            <span className="font-display text-4xl font-bold">{s.bites ?? '—'}</span>
+            <p className="text-[11px] uppercase tracking-wider text-bordeaux/55">🦷 кусів</p>
+          </div>
+          <p className="flex-1 text-[14px] text-bordeaux/75">
+            {s.kisses !== undefined ? `${kissesMessage(s.kisses)} ${bitesMessage(s.bites ?? 0)}` : 'Мінігру ще не пройдено'}
+          </p>
         </div>
       </Section>
 

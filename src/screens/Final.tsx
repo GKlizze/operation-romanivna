@@ -24,6 +24,7 @@ export function Final() {
   const [confirmReset, setConfirmReset] = useState(false)
   const [showLink, setShowLink] = useState(false)
   const kisses = state.kisses ?? 0
+  const bites = state.bites ?? 0
 
   // Святкуємо лише один раз на кожне завершення.
   useEffect(() => {
@@ -65,7 +66,7 @@ export function Final() {
     )
   }
 
-  const shareMessage = `${PLAYER_NAME} виконала «Операцію: Романівна» 💌 ${kisses} ${pluralize(kisses, ['поцілунок', 'поцілунки', 'поцілунків'])} зібрано, план побачення сформовано. Деталі — за посиланням.`
+  const shareMessage = `${PLAYER_NAME} виконала «Операцію: Романівна» 💌 ${kisses} ${pluralize(kisses, ['поцілунок', 'поцілунки', 'поцілунків'])} і ${bites} ${pluralize(bites, ['кусь', 'кусі', 'кусів'])} зібрано, план побачення сформовано. Деталі — за посиланням.`
 
   const share = async () => {
     setBusy('share')
@@ -130,10 +131,11 @@ export function Final() {
                 </p>
                 <p className="mt-1.5 text-[14px] leading-relaxed">{s.text}</p>
                 {s.id === 'kisses' && (
-                  <div className="mt-2 flex flex-wrap gap-0.5">
+                  <div className="mt-2 flex flex-wrap items-center gap-0.5">
                     {Array.from({ length: Math.min(kisses, 40) }, (_, k) => (
                       <Heart key={k} size={11} fill="#7B294B" strokeWidth={0} />
                     ))}
+                    {bites > 0 && <span className="ml-2 text-[12px] leading-none">{'🦷'.repeat(Math.min(bites, 12))}</span>}
                   </div>
                 )}
                 {s.id === 'coupon' && coupon && (
