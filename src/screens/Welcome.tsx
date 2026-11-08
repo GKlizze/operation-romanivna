@@ -1,6 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { FolderLock, Heart, Lock } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { FleeingButton } from '../components/FleeingButton'
+import { Toast } from '../components/Toast'
 import { Button, Card, Chip, RevealText } from '../components/ui'
 import { useGame } from '../game/GameContext'
 import { PLAYER_NAME, WELCOME } from '../game/content'
@@ -57,6 +59,7 @@ function DossierOverlay() {
 export function Welcome() {
   const { next, state } = useGame()
   const [opening, setOpening] = useState(false)
+  const [toast, setToast] = useState<string | null>(null)
   const resuming = state.maxStep > 0
 
   useEffect(() => {
@@ -112,10 +115,12 @@ export function Welcome() {
           <Heart size={18} fill="currentColor" />
           {resuming ? 'Повернутися до місії' : WELCOME.cta}
         </Button>
-        <p className="mt-3 text-center text-xs text-blush/60">Під час місії можна повертатися назад — відповіді не зникнуть.</p>
+        <FleeingButton labels={WELCOME.declineTaunts} hint={WELCOME.declineHint} onCaught={() => setToast(WELCOME.declineCaught)} />
+        <p className="mt-2 text-center text-xs text-blush/60">Під час місії можна повертатися назад — відповіді не зникнуть.</p>
       </motion.div>
 
       <AnimatePresence>{opening && <DossierOverlay />}</AnimatePresence>
+      <Toast message={toast} onDone={() => setToast(null)} />
     </div>
   )
 }

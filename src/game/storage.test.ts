@@ -40,7 +40,7 @@ function filledState(): GameState {
     maxStep: 8,
     completedAt: '2026-11-08T20:00:00.000Z',
     vibe: 'secret',
-    menu: { main: 'steak', dessert: 'pryanyky', drink: 'cocoa' },
+    menu: { main: 'meat', dessert: 'pryanyky', drink: 'cocoa' },
     kisses: 14,
     bites: 2,
     eitherOr: { 0: 'a', 1: 'b', 2: 'b', 3: 'a', 4: 'b' },

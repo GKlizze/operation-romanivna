@@ -7,7 +7,7 @@ function state(overrides: Partial<GameState> = {}): GameState {
   return {
     ...createInitialState(),
     vibe: 'cozy',
-    menu: { main: 'shashlik', dessert: 'pryanyky', drink: 'tea' },
+    menu: { main: 'meat', dessert: 'pryanyky', drink: 'tea' },
     kisses: 9,
     eitherOr: { 0: 'a', 1: 'b', 2: 'b', 3: 'b', 4: 'a' },
     coupon: 'hugs',
@@ -36,7 +36,7 @@ describe('generatePlan', () => {
 
   it('weaves the chosen menu, coupon, kisses and wish into the text', () => {
     const text = allText(state())
-    expect(text).toContain('Шашличок із курячого стегна')
+    expect(text).toContain('Мнясо')
     expect(text).toContain('Пряники')
     expect(text).toContain('Чай')
     expect(text).toContain('30 хвилин обіймів')
@@ -50,6 +50,14 @@ describe('generatePlan', () => {
     expect(withBites.text).toMatch(/3 кусі/)
     const noBites = generatePlan(state({ kisses: 7, bites: 0 })).find((s) => s.id === 'kisses')!
     expect(noBites.text).toMatch(/жодного кусю/i)
+  })
+
+  it('treats the «Ти <3» dessert, «Здивуй» main and «Поміцніше» drink specially', () => {
+    const menu = generatePlan(state({ menu: { main: 'surprise', dessert: 'you', drink: 'strong' } })).find((s) => s.id === 'menu')!
+    expect(menu.text).toMatch(/десерт.*ти/i)
+    expect(menu.text).not.toContain('<3')
+    expect(menu.text).toMatch(/здивуй|сюрприз/i)
+    expect(menu.text).toMatch(/поміцніше/i)
   })
 
   it('changes the opening with the vibe', () => {

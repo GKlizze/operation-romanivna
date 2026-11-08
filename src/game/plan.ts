@@ -83,29 +83,23 @@ function menuSection(state: GameState): string {
   }
   const parts: string[] = []
   if (main) {
-    parts.push(
-      main.id === 'together'
-        ? 'Основну страву готуємо разом — я заважаю обіймами, ти вдаєш, що це дратує.'
-        : `Основна страва: ${main.label}.`,
-    )
+    if (main.id === 'together') parts.push('Основну страву готуємо разом — я заважаю обіймами, ти вдаєш, що це дратує.')
+    else if (main.id === 'surprise') parts.push('Основна страва: сюрприз. Ти сказала «здивуй» — я записав і вже трохи нервую.')
+    else parts.push(`Основна страва: ${main.label}.`)
   }
   if (dessert) {
-    parts.push(
-      dessert.id === 'surprise'
-        ? 'На десерт — сюрприз від мене. Хлопець уже щось гуглить.'
-        : `Десерт: ${dessert.label}.`,
-    )
+    if (dessert.id === 'surprise') parts.push('Десерт: сюрприз від мене. Хлопець уже щось гуглить.')
+    else if (dessert.id === 'you') parts.push('Десерт: ти. Найкраща позиція в меню, калорійність не рахуємо.')
+    else parts.push(`Десерт: ${dessert.label}.`)
   }
   if (drink) {
-    parts.push(
-      drink.id === 'signature'
-        ? 'До цього — авторський напій, рецепт якого я тобі не скажу.'
-        : `Напій: ${drink.label}.`,
-    )
+    if (drink.id === 'strong') parts.push('Напій: щось поміцніше. За нашу зустріч.')
+    else parts.push(`Напій: ${drink.label}.`)
   }
   if (dessert?.id === 'pryanyky') parts.push('Запас пряників перевірено двічі.')
-  if (dessert?.id === 'strawberry') parts.push('Полуницю годую з рук, правила такі.')
-  if (main?.id === 'steak') parts.push('Прожарювання обговоримо пошепки.')
+  if (dessert?.id === 'fruits') parts.push('Фруктики годую з рук, правила такі.')
+  if (main?.id === 'meat') parts.push('Прожарювання обговоримо пошепки.')
+  if (main?.id === 'fish') parts.push('Римбу обіцяю не пересушити. Майже обіцяю.')
   if (drink?.id === 'cocoa') parts.push('Маршмелоу — без обмежень.')
   return parts.join(' ')
 }
