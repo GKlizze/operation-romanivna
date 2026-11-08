@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, Heart, RotateCcw, Timer } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { burst } from '../components/confetti'
+import { Jaw } from '../components/Jaw'
 import { Button, Card, SectionTitle, cx } from '../components/ui'
 import { useGame } from '../game/GameContext'
 import { BITE_WORDS, CRACK_WORDS, KISS_INTRO, KISS_WORDS, LEVEL_TITLES, bitesMessage, kissesMessage } from '../game/content'
@@ -22,6 +23,8 @@ interface HeartItem {
   life: number
   /** звідки повзуть зубки (у % поля) */
   from: { x: number; y: number }
+  /** кут руху щелепи в градусах (0 — вправо) */
+  angle: number
   state: HeartState
 }
 
@@ -45,27 +48,6 @@ const SHARDS = [
 ]
 
 const clamp = (v: number, min = 4, max = 96) => Math.max(min, Math.min(max, v))
-
-/** Зубки, що клацають, повзучи до сердечка. */
-function Teeth({ size = 42 }: { size?: number }) {
-  return (
-    <svg width={size} height={size * 0.8} viewBox="0 0 40 32" className="drop-shadow-[0_4px_10px_rgba(42,15,29,0.65)]">
-      <ellipse cx="20" cy="16" rx="19" ry="14.5" fill="#7B294B" stroke="#FFF8F3" strokeWidth="1.5" />
-      <motion.path
-        d="M5 9 l5 8 l5 -8 l5 8 l5 -8 l5 8 l5 -8 Z"
-        fill="#FFF8F3"
-        animate={{ y: [0, 3.5, 0] }}
-        transition={{ repeat: Infinity, duration: 0.36, ease: 'easeInOut' }}
-      />
-      <motion.path
-        d="M5 23 l5 -8 l5 8 l5 -8 l5 8 l5 -8 l5 8 Z"
-        fill="#FFF8F3"
-        animate={{ y: [0, -3.5, 0] }}
-        transition={{ repeat: Infinity, duration: 0.36, ease: 'easeInOut' }}
-      />
-    </svg>
-  )
-}
 
 function IceHeart({ h, onHit }: { h: HeartItem; onHit: (h: HeartItem) => void }) {
   const crack = h.iceHp > 0 ? h.hits / h.iceHp : 0
@@ -138,6 +120,7 @@ export function Level3Kisses() {
   const timers = useRef<number[]>([])
   const biteTimers = useRef<Map<number, number>>(new Map())
   const heartsRef = useRef<HeartItem[]>([])
+  const arenaRef = useRef<HTMLDivElement>(null)
   const idRef = useRef(0)
   const popIdRef = useRef(0)
   const kissesRef = useRef(0)
@@ -246,7 +229,12 @@ export function Level3Kisses() {
             : edge === 2
               ? { x: -10, y: clamp(y + jitter) }
               : { x: 110, y: clamp(y + jitter) }
-      const heart: HeartItem = { id, x, y, size: 60 + Math.random() * 18, iceHp, hits: 0, life, from, state: 'frozen' }
+      // Напрямок руху в пікселях, щоб щелепа дивилася точно на сердечко.
+      const rect = arenaRef.current?.getBoundingClientRect()
+      const aw = rect?.width ?? 1
+      const ah = rect?.height ?? 1
+      const angle = (Math.atan2(((y - from.y) * ah) / 100, ((x - from.x) * aw) / 100) * 180) / Math.PI
+      const heart: HeartItem = { id, x, y, size: 60 + Math.random() * 18, iceHp, hits: 0, life, from, angle, state: 'frozen' }
       updateHearts((l) => [...l, heart])
       biteTimers.current.set(id, window.setTimeout(() => bite(id), life))
     }
@@ -313,6 +301,7 @@ export function Level3Kisses() {
           </div>
 
           <div
+            ref={arenaRef}
             className="relative h-[56dvh] min-h-[340px] touch-none select-none overflow-hidden rounded-3xl border border-cream/15 bg-bordeaux-deep/50"
             style={{ WebkitUserSelect: 'none' }}
           >
@@ -324,11 +313,13 @@ export function Level3Kisses() {
                     <Heart size={44} fill="#E9B8C7" strokeWidth={0} className="text-blush" />
                   </motion.div>
                   <motion.div
-                    className="absolute -right-10 top-1/2 -translate-y-1/2"
+                    className="absolute -right-14 top-1/2 -translate-y-1/2"
                     animate={{ x: [0, -6, 0] }}
                     transition={{ repeat: Infinity, duration: 1.1 }}
                   >
-                    <Teeth size={34} />
+                    <div style={{ transform: 'scaleX(-1)' }}>
+                      <Jaw size={52} />
+                    </div>
                   </motion.div>
                 </div>
                 <p className="text-sm text-blush/80">Готова? Таймер стартує одразу.</p>
@@ -346,7 +337,7 @@ export function Level3Kisses() {
                     key={`teeth-${h.id}`}
                     initial={{ left: `${h.from.x}%`, top: `${h.from.y}%`, x: '-50%', y: '-50%', opacity: 0, scale: 0.6 }}
                     animate={{ left: `${h.x}%`, top: `${h.y}%`, x: '-50%', y: '-50%', opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.2, transition: { duration: 0.25 } }}
+                    exit={{ opacity: 0, scale: 0.3, transition: { duration: 0.3 } }}
                     transition={{
                       left: { duration: h.life / 1000, ease: 'linear' },
                       top: { duration: h.life / 1000, ease: 'linear' },
@@ -355,7 +346,9 @@ export function Level3Kisses() {
                     }}
                     className="pointer-events-none absolute z-20"
                   >
-                    <Teeth />
+                    <div style={{ transform: `rotate(${h.angle}deg)${Math.abs(h.angle) > 90 ? ' scaleY(-1)' : ''}` }}>
+                      <Jaw />
+                    </div>
                   </motion.div>
                 ))}
             </AnimatePresence>

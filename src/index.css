@@ -106,3 +106,36 @@ textarea {
   background-clip: text;
   color: transparent;
 }
+
+/* Щелепа в рівні 3: верхня й нижня частини клацають навколо шарніра (8,24) у viewBox. */
+@keyframes jaw-upper {
+  0%,
+  100% {
+    transform: rotate(-14deg);
+  }
+  40%,
+  60% {
+    transform: rotate(0deg);
+  }
+}
+@keyframes jaw-lower {
+  0%,
+  100% {
+    transform: rotate(22deg);
+  }
+  40%,
+  60% {
+    transform: rotate(0deg);
+  }
+}
+.jaw-upper,
+.jaw-lower {
+  transform-box: view-box;
+  transform-origin: 8px 24px;
+}
+.jaw-upper {
+  animation: jaw-upper 0.48s cubic-bezier(0.6, 0, 0.25, 1) infinite;
+}
+.jaw-lower {
+  animation: jaw-lower 0.48s cubic-bezier(0.6, 0, 0.25, 1) infinite;
+}
